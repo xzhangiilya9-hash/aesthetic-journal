@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拾光集 · 图文日记</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark">拾</span>
+      <div class="brand-text">
+        <h1>拾光集</h1>
+        <p>一张图，一句话</p>
+      </div>
+    </div>
+    <button id="settingsBtn" class="icon-btn" title="设置">⚙</button>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="write">写一条</button>
+    <button class="tab-btn" data-tab="gallery">回顾</button>
+  </nav>
+
+  <!-- 写一条 -->
+  <section id="tab-write" class="tab-panel active">
+    <form id="entryForm" class="entry-form">
+      <label class="upload-zone" id="uploadZone">
+        <input type="file" id="imageInput" accept="image/*" hidden>
+        <div id="uploadPlaceholder" class="upload-placeholder">
+          <span class="upload-icon">＋</span>
+          <span>点击选择一张图片</span>
+        </div>
+        <img id="imagePreview" class="image-preview" hidden>
+      </label>
+
+      <textarea id="captionInput" class="caption-input" placeholder="写下这一刻的感受……" maxlength="120" rows="3"></textarea>
+      <div class="char-count"><span id="charCount">0</span>/120</div>
+
+      <button type="submit" id="saveBtn" class="save-btn">存下来</button>
+      <p id="statusMsg" class="status-msg"></p>
+    </form>
+  </section>
+
+  <!-- 回顾画廊 -->
+  <section id="tab-gallery" class="tab-panel">
+    <div id="galleryStatus" class="status-msg"></div>
+    <div id="galleryGrid" class="gallery-grid"></div>
+  </section>
+
+</div>
+
+<!-- 设置弹层 -->
+<div id="settingsModal" class="modal-overlay" hidden>
+  <div class="modal">
+    <h2>连接你的 GitHub 仓库</h2>
+    <p class="modal-hint">内容会直接存进你自己的 GitHub 仓库里，Token 只保存在这台浏览器本地，不会上传到任何地方。</p>
+    <label>GitHub 用户名<input type="text" id="ownerInput" placeholder="例如 yiyi-chen"></label>
+    <label>仓库名<input type="text" id="repoInput" placeholder="例如 aesthetic-journal"></label>
+    <label>分支<input type="text" id="branchInput" placeholder="main" value="main"></label>
+    <label>Personal Access Token
+      <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxx">
+    </label>
+    <p class="modal-hint small">Token 需要该仓库的 Contents 读写权限（fine-grained token 勾选 Contents: Read and write 即可）。具体申请步骤见 README。</p>
+    <div class="modal-actions">
+      <button id="cancelSettings" class="ghost-btn">取消</button>
+      <button id="saveSettings" class="save-btn">保存</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
