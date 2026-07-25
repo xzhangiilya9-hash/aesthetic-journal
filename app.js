@@ -44,7 +44,10 @@ function cnDate(iso) {
 async function fetchEntriesFile(settings) {
   const { owner, repo, branch, token } = settings;
   const url = `${apiBase(owner, repo)}/entries.json?ref=${branch}`;
-  const res = await fetch(url, { headers: ghHeaders(token) });
+  let res = await fetch(url, { headers: ghHeaders(token) });
+  if (res.status === 401) {
+    res = await fetch(url);
+  }
   if (res.status === 404) {
     return { entries: [], sha: null };
   }
@@ -121,9 +124,12 @@ async function loadImageBlobUrl(settings, filename) {
   if (imageBlobCache.has(filename)) return imageBlobCache.get(filename);
   const { owner, repo, branch, token } = settings;
   const url = `${apiBase(owner, repo)}/images/${filename}?ref=${branch}`;
-  const res = await fetch(url, {
+  let res = await fetch(url, {
     headers: { ...ghHeaders(token), Accept: 'application/vnd.github.raw+json' }
   });
+  if (res.status === 401) {
+    res = await fetch(url, { headers: { Accept: 'application/vnd.github.raw+json' } });
+  }
   if (!res.ok) throw new Error(`图片加载失败 (${res.status})`);
   const blob = await res.blob();
   const objectUrl = URL.createObjectURL(blob);
