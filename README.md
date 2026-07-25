@@ -2,7 +2,11 @@
 
 > 每天一张图，一句话，像写信一样记录生活里的美。
 
-**[在线体验 →](https://xzhangiilya9-hash.github.io/aesthetic-journal/)**
+**[→ 在线体验](https://xzhangiilya9-hash.github.io/aesthetic-journal/)**
+
+<p align="center">
+  <img src="assets/flower2/10-ranunculus-white.png" width="120" alt="干花装饰">
+</p>
 
 ---
 
@@ -11,6 +15,8 @@
 拾光集是一个极简的视觉日记 Web App。每天拍一张让你觉得好看的东西，写一句当时的心情，它就安静地帮你存下来。
 
 打开的时候，你看到的不是一个列表或者瀑布流，而是一摞信——像桌上随手叠起来的几封旧信，干花从背后长出来，你点一下就翻过一张，慢慢回看那些日子。
+
+所有数据存在你自己的 GitHub 仓库里，没有后端、没有数据库、没有账号体系。Token 只留在你自己的浏览器本地。
 
 ## 设计理念
 
@@ -37,21 +43,21 @@
 
 ### 关键技术点
 
-- **数据存储**：通过 GitHub Contents API 将条目（`entries.json`）和图片直接存入用户自己的 GitHub 仓库，不依赖任何后端服务
-- **图片压缩**：上传前用 Canvas 将图片缩至 1600px 长边、JPEG 0.85 质量，避免仓库体积膨胀
-- **Private 仓库兼容**：通过 API + Token 获取图片内容，转成 Blob URL 供 `<img>` 使用，附带内存缓存
-- **PWA**：支持添加到手机主屏幕，Service Worker 缓存静态资源，二次打开秒加载
-- **`[hidden]` 修复**：CSS `display:flex` 会覆盖 HTML `hidden` 属性，用 `[hidden]{display:none!important}` 显式压回
-- **响应式 + 无障碍**：`prefers-reduced-motion` 支持、`safe-area-inset` 适配、键盘快捷键（空格/方向键翻信，Esc 关浮层）
+- **GitHub as Backend** — 通过 Contents API 将条目（`entries.json`）和图片直接存入用户自己的仓库，零服务器成本
+- **图片压缩** — 上传前用 Canvas 将图片缩至 1600px 长边、JPEG 0.85 质量，避免仓库体积膨胀
+- **Private 仓库兼容** — 通过 API + Token 获取图片内容，转成 Blob URL 供 `<img>` 使用，附带内存缓存
+- **PWA** — 支持添加到手机主屏幕，Service Worker 缓存静态资源，二次打开秒加载
+- **响应式 + 无障碍** — `prefers-reduced-motion` 支持、`safe-area-inset` 适配、键盘快捷键（空格/方向键翻信，Esc 关浮层）
 
-## 使用方式
+## 自己部署
 
-1. 打开 [拾光集](https://xzhangiilya9-hash.github.io/aesthetic-journal/)
-2. 点右上角齿轮，填入你的 GitHub 用户名、仓库名、分支和 [Personal Access Token](https://github.com/settings/tokens)（需要 Contents 读写权限）
-3. 点「写一条」，选一张图、写一句话，存下来
-4. 每天随手记，积累起来就是你自己的视觉日记
+1. Fork 本仓库
+2. 在仓库 Settings → Pages 里开启 GitHub Pages（Source 选 GitHub Actions）
+3. 打开你的 `https://<用户名>.github.io/aesthetic-journal/`
+4. 点右上角齿轮，填入你的 GitHub 用户名、仓库名、分支和 [Personal Access Token](https://github.com/settings/tokens)（需要 Contents 读写权限）
+5. 开始记录
 
-**手机上像 App 一样用**：Safari 分享 → 添加到主屏幕，全屏打开无地址栏。
+**手机上像 App 一样用**：Safari → 分享 → 添加到主屏幕。
 
 ## 项目结构
 
