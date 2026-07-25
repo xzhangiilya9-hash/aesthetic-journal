@@ -1,282 +1,256 @@
 :root {
-  --paper: #F5F1EA;
-  --surface: #FFFFFF;
-  --ink: #3A3530;
-  --ink-soft: #7A7266;
-  --accent: #8B9A7D;
-  --accent-deep: #6E7D62;
-  --blush: #D8B4A0;
-  --border: #E4DED2;
-  --shadow: rgba(58, 53, 48, 0.10);
-  --font-display: 'Fraunces', 'Noto Serif SC', serif;
-  --font-ui: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  --white: #FFFFFF;
+  --ink: #4A4543;
+  --ink-soft: #9B9490;
+  --rose: #C4A088;
+  --rose-deep: #A8836B;
+  --rose-light: #F3E8E2;
+  --border: #E8E2DC;
+  --shadow: rgba(74, 69, 67, 0.06);
+  --font-hand: 'Zhi Mang Xing', cursive;
+  --font-sys: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  background: var(--paper);
-  background-image:
-    radial-gradient(circle at 20% 10%, rgba(139,154,125,0.05), transparent 40%),
-    radial-gradient(circle at 80% 90%, rgba(216,180,160,0.06), transparent 40%);
+  background: var(--white);
   color: var(--ink);
-  font-family: var(--font-ui);
+  font-family: var(--font-hand);
   min-height: 100vh;
 }
 
 .app {
-  max-width: 640px;
+  max-width: 520px;
   margin: 0 auto;
-  padding: 32px 20px 80px;
+  padding: 40px 24px 80px;
 }
 
 .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 0.5px solid var(--border);
 }
 
-.brand { display: flex; align-items: center; gap: 14px; }
-
-.brand-mark {
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: 20px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
+.brand { display: flex; align-items: baseline; gap: 0; }
 
 .brand-text h1 {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 22px;
+  font-family: var(--font-hand);
+  font-weight: 400;
+  font-size: 36px;
   margin: 0;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.08em;
+  color: var(--ink);
 }
 
 .brand-text p {
-  margin: 2px 0 0;
-  font-size: 12.5px;
+  margin: 0 0 0 4px;
+  font-size: 20px;
   color: var(--ink-soft);
+  font-family: var(--font-hand);
+  display: inline;
 }
 
+.brand-mark { display: none; }
+
 .icon-btn {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  width: 38px; height: 38px;
-  border-radius: 50%;
+  border: none;
+  background: none;
+  width: 36px; height: 36px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
   color: var(--ink-soft);
-  transition: transform 0.2s ease, color 0.2s ease;
+  transition: color 0.2s ease;
+  border-radius: 0;
 }
-.icon-btn:hover { transform: rotate(25deg); color: var(--accent-deep); }
+.icon-btn:hover { color: var(--rose-deep); }
 
 .tabs {
   display: flex;
-  gap: 6px;
-  margin-bottom: 28px;
-  border-bottom: 1px solid var(--border);
+  gap: 0;
+  margin-bottom: 32px;
 }
 
 .tab-btn {
   background: none;
   border: none;
-  font-family: var(--font-ui);
-  font-size: 14.5px;
+  font-family: var(--font-hand);
+  font-size: 22px;
   color: var(--ink-soft);
-  padding: 10px 4px;
-  margin-right: 20px;
+  padding: 8px 0;
+  margin-right: 28px;
   cursor: pointer;
   position: relative;
   transition: color 0.2s ease;
+  letter-spacing: 0.04em;
 }
 .tab-btn::after {
   content: '';
   position: absolute;
-  left: 0; right: 0; bottom: -1px;
-  height: 2px;
-  background: var(--accent);
+  left: 0; right: 0; bottom: 0;
+  height: 1.5px;
+  background: var(--ink);
   transform: scaleX(0);
   transition: transform 0.25s ease;
 }
-.tab-btn.active { color: var(--ink); font-weight: 600; }
+.tab-btn.active { color: var(--ink); }
 .tab-btn.active::after { transform: scaleX(1); }
 
 .tab-panel { display: none; }
-.tab-panel.active { display: block; animation: fadeIn 0.35s ease; }
+.tab-panel.active { display: block; animation: fadeIn 0.4s ease; }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* 写一条 */
 .entry-form {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 6px 20px var(--shadow);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
 }
 
 .upload-zone {
-  display: block;
-  border: 1.5px dashed var(--border);
-  border-radius: 14px;
-  min-height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px dashed var(--border);
+  border-radius: 2px;
+  min-height: 240px;
   cursor: pointer;
   overflow: hidden;
-  background: #FBF9F5;
+  background: transparent;
   transition: border-color 0.2s ease;
 }
-.upload-zone:hover { border-color: var(--accent); }
+.upload-zone:hover { border-color: var(--rose); }
 
 .upload-placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   color: var(--ink-soft);
-  font-size: 13.5px;
+  font-size: 19px;
+  font-family: var(--font-hand);
 }
 .upload-icon {
-  font-size: 26px;
-  color: var(--accent);
-  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--rose);
+  font-family: var(--font-hand);
 }
 
 .image-preview {
   width: 100%;
-  max-height: 420px;
+  max-height: 480px;
   object-fit: contain;
   display: block;
 }
 
 .caption-input {
   width: 100%;
-  margin-top: 16px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 14px;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 15.5px;
+  margin-top: 20px;
+  border: none;
+  border-bottom: 0.5px solid var(--border);
+  border-radius: 0;
+  padding: 12px 0;
+  font-family: var(--font-hand);
+  font-size: 20px;
   color: var(--ink);
-  background: #FBF9F5;
+  background: transparent;
   resize: none;
-  line-height: 1.6;
+  line-height: 1.8;
+  letter-spacing: 0.03em;
+}
+.caption-input::placeholder {
+  color: var(--ink-soft);
 }
 .caption-input:focus {
   outline: none;
-  border-color: var(--accent);
+  border-bottom-color: var(--rose);
 }
 
 .char-count {
   text-align: right;
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--ink-soft);
-  margin-top: 4px;
+  margin-top: 6px;
+  font-family: var(--font-sys);
+  letter-spacing: 0;
 }
 
 .save-btn {
   width: 100%;
-  margin-top: 16px;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  padding: 13px;
-  font-family: var(--font-ui);
-  font-size: 14.5px;
-  font-weight: 600;
+  margin-top: 24px;
+  background: transparent;
+  color: var(--ink);
+  border: 0.5px solid var(--border);
+  border-radius: 2px;
+  padding: 14px;
+  font-family: var(--font-hand);
+  font-size: 22px;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  letter-spacing: 0.06em;
 }
-.save-btn:hover { background: var(--accent-deep); }
-.save-btn:active { transform: scale(0.98); }
-.save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.save-btn:hover { border-color: var(--rose); color: var(--rose-deep); }
+.save-btn:active { transform: scale(0.99); }
+.save-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .status-msg {
   text-align: center;
-  font-size: 13px;
+  font-size: 18px;
   color: var(--ink-soft);
-  min-height: 18px;
-  margin-top: 10px;
+  min-height: 22px;
+  margin-top: 12px;
+  font-family: var(--font-hand);
 }
 
-/* 画廊 */
 .gallery-grid {
-  columns: 2;
-  column-gap: 16px;
-}
-@media (max-width: 480px) {
-  .gallery-grid { columns: 1; }
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
 }
 
 .gallery-card {
-  break-inside: avoid;
-  background: var(--surface);
-  border-radius: 4px 4px 10px 10px;
-  margin-bottom: 18px;
-  padding: 10px 10px 16px;
-  box-shadow: 0 8px 18px var(--shadow);
   position: relative;
-  transform: rotate(var(--rot, -1deg));
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-.gallery-card:hover {
-  transform: rotate(0deg) translateY(-2px);
-  box-shadow: 0 12px 24px var(--shadow);
-}
-.gallery-card::before {
-  content: '';
-  position: absolute;
-  top: -8px; left: 50%;
-  transform: translateX(-50%) rotate(-2deg);
-  width: 54px; height: 18px;
-  background: var(--blush);
-  opacity: 0.55;
-  border-radius: 2px;
 }
 
 .gallery-card img {
   width: 100%;
-  border-radius: 2px;
   display: block;
+  border: 0.5px solid var(--border);
 }
 
 .gallery-caption {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 14px;
-  line-height: 1.6;
+  font-family: var(--font-hand);
+  font-size: 20px;
+  line-height: 1.8;
   color: var(--ink);
-  margin: 10px 2px 2px;
+  margin: 14px 0 0;
+  letter-spacing: 0.03em;
 }
 
 .gallery-date {
-  font-size: 10.5px;
+  font-family: var(--font-hand);
+  font-size: 17px;
   color: var(--ink-soft);
-  margin: 6px 2px 0;
-  letter-spacing: 0.03em;
+  margin: 4px 0 0;
+  letter-spacing: 0.04em;
 }
 
 .delete-btn {
   position: absolute;
-  top: 6px; right: 6px;
-  width: 22px; height: 22px;
+  top: 10px; right: 10px;
+  width: 24px; height: 24px;
   border-radius: 50%;
   border: none;
-  background: rgba(58,53,48,0.55);
+  background: rgba(74,69,67,0.5);
   color: #fff;
   font-size: 12px;
   line-height: 1;
@@ -286,69 +260,109 @@ body {
 }
 .gallery-card:hover .delete-btn { opacity: 1; }
 
-/* 设置弹层 */
 .modal-overlay {
   position: fixed; inset: 0;
-  background: rgba(58,53,48,0.35);
+  background: rgba(74,69,67,0.2);
   display: flex; align-items: center; justify-content: center;
-  padding: 20px;
+  padding: 24px;
   z-index: 10;
 }
 .modal-overlay[hidden] {
   display: none;
 }
 .modal {
-  background: var(--surface);
-  border-radius: 16px;
-  padding: 26px;
-  max-width: 420px;
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 2px;
+  padding: 32px;
+  max-width: 400px;
   width: 100%;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.08);
 }
 .modal h2 {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 19px;
-  margin: 0 0 10px;
+  font-family: var(--font-hand);
+  font-weight: 400;
+  font-size: 26px;
+  margin: 0 0 8px;
+  letter-spacing: 0.04em;
 }
 .modal-hint {
-  font-size: 12.5px;
+  font-size: 17px;
   color: var(--ink-soft);
-  line-height: 1.6;
-  margin: 0 0 16px;
+  line-height: 1.8;
+  margin: 0 0 20px;
+  font-family: var(--font-hand);
 }
-.modal-hint.small { font-size: 11.5px; margin-top: -8px; }
+.modal-hint.small { font-size: 15px; margin-top: -4px; }
 .modal label {
   display: block;
-  font-size: 12.5px;
+  font-size: 16px;
   color: var(--ink-soft);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  font-family: var(--font-hand);
+  letter-spacing: 0.02em;
 }
 .modal input {
   width: 100%;
-  margin-top: 5px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 9px 11px;
-  font-size: 13.5px;
-  font-family: var(--font-ui);
-  background: #FBF9F5;
+  margin-top: 6px;
+  border: none;
+  border-bottom: 0.5px solid var(--border);
+  border-radius: 0;
+  padding: 8px 0;
+  font-size: 15px;
+  font-family: var(--font-sys);
+  background: transparent;
+  color: var(--ink);
 }
-.modal input:focus { outline: none; border-color: var(--accent); }
+.modal input:focus { outline: none; border-bottom-color: var(--rose); }
 .modal-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 6px;
+  gap: 12px;
+  margin-top: 10px;
 }
 .ghost-btn {
   flex: 1;
   background: none;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 11px;
+  border: 0.5px solid var(--border);
+  border-radius: 2px;
+  padding: 12px;
   color: var(--ink-soft);
-  font-family: var(--font-ui);
-  font-size: 14px;
+  font-family: var(--font-hand);
+  font-size: 20px;
   cursor: pointer;
+  letter-spacing: 0.04em;
 }
+.ghost-btn:hover { border-color: var(--ink-soft); }
 .modal-actions .save-btn { flex: 1; margin-top: 0; }
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0 20px;
+  color: var(--ink-soft);
+}
+.empty-state svg {
+  margin-bottom: 20px;
+}
+.empty-state p {
+  font-family: var(--font-hand);
+  font-size: 22px;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+}
+
+.corner-flower {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (max-width: 480px) {
+  .app { padding: 28px 18px 60px; }
+  .brand-text h1 { font-size: 30px; }
+  .brand-text p { font-size: 17px; }
+}
