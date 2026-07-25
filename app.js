@@ -104,6 +104,44 @@ function rawImageUrl(settings, filename) {
   return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/images/${filename}`;
 }
 
+// ---------- 图片压缩 ----------
+function compressImage(file, maxSize = 2400, quality = 0.88) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxSize || height > maxSize) {
+          if (width > height) {
+            height = Math.round(height * (maxSize / width));
+            width = maxSize;
+          } else {
+            width = Math.round(width * (maxSize / height));
+            height = maxSize;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            reject(new Error('图片压缩失败'));
+            return;
+          }
+          resolve(blob);
+        }, 'image/jpeg', quality);
+      };
+      img.onerror = () => reject(new Error('图片加载失败'));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error('图片读取失败'));
+    reader.readAsDataURL(file);
+  });
+}
+
 // ---------- UI 状态 ----------
 let selectedFile = null;
 
@@ -177,19 +215,26 @@ function ensureSettings() {
   return s;
 }
 
-// ---------- 上传预览 ----------
+// ---------- 上传预览（选图后自动压缩） ----------
 els.uploadZone.addEventListener('click', () => els.imageInput.click());
-els.imageInput.addEventListener('change', () => {
+els.imageInput.addEventListener('change', async () => {
   const file = els.imageInput.files[0];
   if (!file) return;
-  selectedFile = file;
-  const reader = new FileReader();
-  reader.onload = e => {
-    els.imagePreview.src = e.target.result;
+
+  els.statusMsg.textContent = '正在压缩图片……';
+  try {
+    const compressed = await compressImage(file);
+    selectedFile = compressed;
+    const previewUrl = URL.createObjectURL(compressed);
+    els.imagePreview.src = previewUrl;
     els.imagePreview.hidden = false;
     els.uploadPlaceholder.hidden = true;
-  };
-  reader.readAsDataURL(file);
+    els.statusMsg.textContent = '';
+  } catch (err) {
+    console.error(err);
+    selectedFile = null;
+    els.statusMsg.textContent = err.message || '图片处理失败，换一张试试';
+  }
 });
 
 els.captionInput.addEventListener('input', () => {
@@ -216,7 +261,8 @@ els.entryForm.addEventListener('submit', async (e) => {
   els.statusMsg.textContent = '正在存进你的仓库……';
 
   try {
-    const ext = (selectedFile.name.split('.').pop() || 'jpg').toLowerCase();
+    // 图片已在选图时压缩为 JPEG，这里统一用 jpg 后缀
+    const ext = 'jpg';
     const id = Date.now();
     const filename = `${id}.${ext}`;
 
