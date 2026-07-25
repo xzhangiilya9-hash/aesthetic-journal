@@ -104,42 +104,21 @@ function rawImageUrl(settings, filename) {
   return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/images/${filename}`;
 }
 
-// ---------- 图片压缩 ----------
-function compressImage(file, maxSize = 2400, quality = 0.88) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        let { width, height } = img;
-        if (width > maxSize || height > maxSize) {
-          if (width > height) {
-            height = Math.round(height * (maxSize / width));
-            width = maxSize;
-          } else {
-            width = Math.round(width * (maxSize / height));
-            height = maxSize;
-          }
-        }
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-        canvas.toBlob((blob) => {
-          if (!blob) {
-            reject(new Error('图片压缩失败'));
-            return;
-          }
-          resolve(blob);
-        }, 'image/jpeg', quality);
-      };
-      img.onerror = () => reject(new Error('图片加载失败'));
-      img.src = e.target.result;
-    };
-    reader.onerror = () => reject(new Error('图片读取失败'));
-    reader.readAsDataURL(file);
+// private 仓库下，raw.githubusercontent.com 裸链接没有 token 会 404，
+// 必须走 Contents API 带 token 认证获取，再转成本地 blob URL 给 <img> 用。
+const imageBlobCache = new Map();
+async function loadImageBlobUrl(settings, filename) {
+  if (imageBlobCache.has(filename)) return imageBlobCache.get(filename);
+  const { owner, repo, branch, token } = settings;
+  const url = `${apiBase(owner, repo)}/images/${filename}?ref=${branch}`;
+  const res = await fetch(url, {
+    headers: { ...ghHeaders(token), Accept: 'application/vnd.github.raw+json' }
   });
+  if (!res.ok) throw new Error(`图片加载失败 (${res.status})`);
+  const blob = await res.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  imageBlobCache.set(filename, objectUrl);
+  return objectUrl;
 }
 
 // ---------- UI 状态 ----------
@@ -203,7 +182,16 @@ els.saveSettings.addEventListener('click', () => {
     return;
   }
   saveSettingsToStorage(s);
-  els.settingsModal.hidden = true;
+
+  // 明确的保存反馈：按钮文字短暂变化，再关闭弹层，避免看起来像没反应
+  const originalText = els.saveSettings.textContent;
+  els.saveSettings.textContent = '已保存 ✓';
+  els.saveSettings.disabled = true;
+  setTimeout(() => {
+    els.settingsModal.hidden = true;
+    els.saveSettings.textContent = originalText;
+    els.saveSettings.disabled = false;
+  }, 600);
 });
 
 function ensureSettings() {
@@ -215,26 +203,19 @@ function ensureSettings() {
   return s;
 }
 
-// ---------- 上传预览（选图后自动压缩） ----------
+// ---------- 上传预览 ----------
 els.uploadZone.addEventListener('click', () => els.imageInput.click());
-els.imageInput.addEventListener('change', async () => {
+els.imageInput.addEventListener('change', () => {
   const file = els.imageInput.files[0];
   if (!file) return;
-
-  els.statusMsg.textContent = '正在压缩图片……';
-  try {
-    const compressed = await compressImage(file);
-    selectedFile = compressed;
-    const previewUrl = URL.createObjectURL(compressed);
-    els.imagePreview.src = previewUrl;
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    els.imagePreview.src = e.target.result;
     els.imagePreview.hidden = false;
     els.uploadPlaceholder.hidden = true;
-    els.statusMsg.textContent = '';
-  } catch (err) {
-    console.error(err);
-    selectedFile = null;
-    els.statusMsg.textContent = err.message || '图片处理失败，换一张试试';
-  }
+  };
+  reader.readAsDataURL(file);
 });
 
 els.captionInput.addEventListener('input', () => {
@@ -261,8 +242,7 @@ els.entryForm.addEventListener('submit', async (e) => {
   els.statusMsg.textContent = '正在存进你的仓库……';
 
   try {
-    // 图片已在选图时压缩为 JPEG，这里统一用 jpg 后缀
-    const ext = 'jpg';
+    const ext = (selectedFile.name.split('.').pop() || 'jpg').toLowerCase();
     const id = Date.now();
     const filename = `${id}.${ext}`;
 
@@ -320,9 +300,14 @@ async function loadGallery() {
       card.style.setProperty('--rot', `${(i % 2 === 0 ? -1 : 1) * (0.6 + (i % 3) * 0.4)}deg`);
 
       const img = document.createElement('img');
-      img.src = rawImageUrl(settings, entry.image);
       img.loading = 'lazy';
       img.alt = entry.caption;
+      loadImageBlobUrl(settings, entry.image)
+        .then(url => { img.src = url; })
+        .catch(err => {
+          console.error(err);
+          img.alt = '图片加载失败';
+        });
 
       const caption = document.createElement('p');
       caption.className = 'gallery-caption';
